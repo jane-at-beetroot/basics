@@ -35,6 +35,10 @@ def print_student(student):
     for field in student:
         print(field, '\t', student[field])
 
+def print_strudents_list():
+    '''Call print_student() for every student in STUDENTS''' 
+    pass
+
 def load_students():
     for test_student in TEST_STUDENTS:
         STUDENTS.append(dict(zip(student_fields, test_student)))
@@ -48,7 +52,6 @@ while True:
     elif action == 'load':
         load_students()
     elif action == 'print':
-        for student in STUDENTS:
-            print_student(student)
+        print_strudents_list()
     else:
         break
