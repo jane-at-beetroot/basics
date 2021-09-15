@@ -1,0 +1,14 @@
+[
+    {
+        "question": "What is primitive data type in Python?",
+        "answers": [
+            "Tuple",
+            "Structure",
+            "Integer"
+        ],
+        "correct_answer": "3"
+    },
+    {
+        
+    }
+]
