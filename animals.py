@@ -1,7 +1,7 @@
 class Animal:
 
     paws = 4
-    tail = True
+    _tail = True
     ears = 2
 
     def __init__(self, name):
@@ -13,10 +13,27 @@ class Animal:
     def voice(self):
         print('Bzzzzzzzzz!!!')
 
+    @property
+    def tail(self):
+        if self._tail:
+            return 'This animal has tail'
+        else:
+            return 'This animal has no tail'
+    
+    @tail.setter
+    def tail(self, tail):
+        if type(tail) is bool:
+            self._tail = tail
+        if tail == 'Yes':
+            self._tail = True
+        elif tail == 'No':
+            self._tail = False
+
 
 class Cat(Animal):
 
     def __eq__(self, other):
+        print('CAT EQ')
         return self.name == other.name
 
     @staticmethod
@@ -37,22 +54,26 @@ class Kitten(Cat):
 
 class Dog(Animal):
 
-    weight = 0
     TOTAL_COUNT = 0
 
     def __init__(self, name='Tuzik', weight=10):
         super().__init__(name)
-        self.weight = weight
+        self.weight = abs(weight)
         Dog.TOTAL_COUNT += 1
 
     def __eq__(self, other):
+        print('Dog EQ')
         if hasattr(other, 'weight'):
             return self.weight == other.weight
         else:
+            print('Right operand has no weight')
             return NotImplemented
 
     def __lt__(self, other):
-        return self.weight < other.weight
+        if hasattr(other, 'weight'):
+            return self.weight < other.weight
+        else:
+            return False
 
     def voice(self):
         print('Bark! My name is {}'.format(self.name)) 
@@ -68,6 +89,15 @@ class Dog(Animal):
             setattr(obj, key, dict_data[key])
         return obj
 
+    def set_weight(self, weight):
+        self._weight = abs(weight)
+
+    def get_weight(self):
+        return self._weight
+        return '{} kg'.format(self._weight)
+
+    weight = property(get_weight, set_weight)
+    
 class CatDog(Dog, Cat):
 
     def voice(self):
@@ -75,16 +105,21 @@ class CatDog(Dog, Cat):
 
 
 if __name__ == '__main__':
-    dog1 = Dog()
+#    dog1 = Dog('Murzik', -20)
 #    print(dog1)
 #    print(dog1.weight)
-    dog_data = {'name': 'Joy', 'weight': 15}
-    dog2 = Dog.from_dict(dog_data)
-    print(dog2)
-    print(dog2.weight)
+#    dog1.weight = -20
+#    print(dog1.weight)
+    bug = Animal('Bug')
+    bug.tail = 'No'
+    print(bug.tail)
+#    dog_data = {'name': 'Joy', 'weight': 15}
+#    dog2 = Dog.from_dict(dog_data)
+#    print(dog2)
+#    print(dog2.weight)
 #    cat = Cat('Murzik')
-#    print(dog1 == cat)
-#    print(cat == dog1)
+#    print(dog1 < cat)
+#    print(cat < dog1)
 
 
 
