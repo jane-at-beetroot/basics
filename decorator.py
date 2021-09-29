@@ -6,7 +6,7 @@ def my_decorator(func):
             print(str(e))
     return wrapper
 
-#@my_decorator
+#@my_decorator(a, b)
 def my_func(num):
     if num%2:
         raise RuntimeError('Just for fun!')
