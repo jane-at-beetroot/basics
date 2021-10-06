@@ -11,6 +11,18 @@ class AnimalHotel:
         else:
             self.visitors = []
 
+    def __iter__(self):
+        self.index = 0
+        return self
+
+    def __next__(self):
+        if self.index<len(self.visitors):
+            index = self.index
+            self.index += 1
+            return self.visitors[index]
+        else:
+            raise StopIteration
+
     def print_visitors(self):
         for visitor in self.visitors:
             print(visitor, end=', ')
@@ -37,3 +49,12 @@ if __name__ == '__main__':
     hotel = AnimalHotel([dog, cat])
     hotel.add_visitor()
     hotel.print_visitors()
+    iter_hotel = iter(hotel)
+    for guest in iter_hotel:
+        print(guest)
+
+
+
+
+
+
