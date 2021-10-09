@@ -32,3 +32,9 @@ class Dashboard:
     def print_all_tasks(self):
         for task in self.task_list:
             print(task)
+
+    def sort_by_title(self):
+        return sorted(self.task_list, 
+            key=lambda task: task.title) 
+
+

@@ -46,7 +46,17 @@ class TestTask(unittest.TestCase):
         dashboard = Dashboard()
         dashboard.task_list.extend([task1, task2])
         dashboard.print_all_tasks()
-        self.assertEqual(mock_stdout.getvalue(), 'My test task\nMy second task\n')
+        self.assertEqual(mock_stdout.getvalue(),
+            'My test task\nMy second task\n')
+
+    def test_sort_task_by_title(self):
+        task1 = Task('D task')
+        task2 = Task('A task')
+        dashboard = Dashboard()
+        dashboard.task_list.extend([task1, task2])
+        self.assertEqual(dashboard.sort_by_title(),
+            [task2, task1])
+
 
 if __name__ == '__main__':
     unittest.main()
