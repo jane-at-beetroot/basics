@@ -17,7 +17,7 @@ class Task:
         if value in range(1, 11):
             self._priority = value
         else:
-            return 'Value out of range'
+            raise ValueError('Priority value is out of range')
 
 class Dashboard:
 
@@ -28,3 +28,7 @@ class Dashboard:
         title = input('Task name:   ')
         new_task = Task(title)
         self.task_list.append(new_task)
+
+    def print_all_tasks(self):
+        for task in self.task_list:
+            print(task)

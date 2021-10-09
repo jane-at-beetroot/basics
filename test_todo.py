@@ -1,5 +1,6 @@
+import io
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from lesson17 import Task, Dashboard
 
@@ -34,8 +35,18 @@ class TestTask(unittest.TestCase):
 
     def test_set_task_incorrect_priority(self):
         task = Task('My test task')
-        task.priority = 20
+        with self.assertRaises(ValueError):
+            task.priority = 20
         self.assertEqual(task.priority, 1)
+
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_print_all_tasks(self, mock_stdout):
+        task1 = Task('My test task')
+        task2 = Task('My second task')
+        dashboard = Dashboard()
+        dashboard.task_list.extend([task1, task2])
+        dashboard.print_all_tasks()
+        self.assertEqual(mock_stdout.getvalue(), 'My test task\nMy second task\n')
 
 if __name__ == '__main__':
     unittest.main()
