@@ -1,4 +1,22 @@
+import os
+import json
 import googlemaps
+from datetime import datetime
+
+
+class OpenFile:
+
+    def __init__(self, filename, mode):
+        self._file = open(filename, mode)
+
+    def __enter__(self):
+        return self._file
+
+    def __exit__(self, type, value, traceback):
+        self._file.close()
+        return True
+
+
 
 class Task:
 
@@ -26,16 +44,22 @@ class Task:
         place_lookup = input('Enter location name: \t')
         gmaps = googlemaps.Client(
             key='AIzaSyDZUTx1HWrOcNDng1V7-smaaHTBSobrw0I')
-        place = gmaps.find_place(
-            place_lookup,
-            'textquery',
-            fields=['geometry/location', 'name', 'place_id']
-        )
-        self.location = {
-            'coordinates': place['candidates'][0]['geometry']['location'],
-            'name': place['candidates'][0]['name'],
-            'google_id': place['candidates'][0]['place_id']
-        }
+        try:
+            place = gmaps.find_place(
+                place_lookup,
+                'textquery',
+                fields=['geometry/location', 'name', 'place_id']
+            )
+            if place['status'] == 'OK':
+                self.location = {
+                    'coordinates': place['candidates'][0]['geometry']['location'],
+                    'name': place['candidates'][0]['name'],
+                    'google_id': place['candidates'][0]['place_id']
+                }
+            else:
+                raise RuntimeError('Cannot set location')
+        except:
+            return
 
 class Dashboard:
 
@@ -53,6 +77,26 @@ class Dashboard:
 
     def sort_by_title(self):
         return sorted(self.task_list, 
-            key=lambda task: task.title) 
+            key=lambda task: task.title)
+
+    def dump_to_json(self):
+        task_list = [t.__dict__ for t in self.task_list]
+        dump_time = datetime.now()
+        filename = 'tasks_{}.json'.format(
+            dump_time.strftime('%Y%m%d%H%M%S'))
+        filepath = os.path.join(os.getcwd(),'data', filename)
+        '''
+        try:
+            file = open(filename, 'w')
+            json.dump(task_list, file)
+            raise RuntimeError()
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
+        '''
+        with OpenFile(filepath, 'w') as dump_file:
+            json.dump(task_list, dump_file)
+
 
 

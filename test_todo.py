@@ -5,6 +5,27 @@ from unittest.mock import patch, Mock
 from lesson17 import Task, Dashboard
 
 
+LOCATION_DICT = {
+    'candidates': [
+        {'geometry': 
+            {'location': {'lat': 50.5078373, 'lng': 30.4982641}
+        },
+        'name': 'ТРЦ DREAM / DREAM yellow', 
+        'place_id': 'ChIJcZlrpBPS1EARl0pK1p4MO9Q'}
+    ], 
+    'status': 'OK'}
+
+LOCATION_WITH_ERROR_DICT = {
+    'candidates': [
+        {'geometry': 
+            {'location': {'lat': 50.5078373, 'lng': 30.4982641}
+        },
+        'name': 'ТРЦ DREAM / DREAM yellow', 
+        'place_id': 'ChIJcZlrpBPS1EARl0pK1p4MO9Q'}
+    ], 
+    'status': 'ERROR'}
+
+
 class TestTask(unittest.TestCase):
 
     def test_task_object(self):
@@ -56,6 +77,39 @@ class TestTask(unittest.TestCase):
         dashboard.task_list.extend([task1, task2])
         self.assertEqual(dashboard.sort_by_title(),
             [task2, task1])
+
+    @patch('googlemaps.Client.find_place', return_value=LOCATION_DICT)
+    @patch('builtins.input', return_value='Dream Town')
+    def test_add_location(self, input_mock, maps_mock):
+        task = Task('My test task')
+        self.assertIsNone(task.location)
+        task.add_location()
+        self.assertIsNotNone(task.location)
+        self.assertTrue('coordinates' in task.location)
+
+    @patch('googlemaps.Client.find_place', return_value=LOCATION_WITH_ERROR_DICT)
+    @patch('builtins.input', return_value='Dream Town')
+    def test_add_location_with_error(self, input_mock, maps_mock):
+        task = Task('My test task')
+        self.assertIsNone(task.location)
+        task.add_location()
+        self.assertIsNone(task.location)
+
+    def test_dump_to_json(self):
+        task1 = Task('D task')
+        task2 = Task('A task')
+        dashboard = Dashboard()
+        dashboard.task_list.extend([task1, task2])
+        dashboard.dump_to_json()
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
