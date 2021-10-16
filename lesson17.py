@@ -2,6 +2,7 @@ import os
 import json
 import googlemaps
 from datetime import datetime
+from dataclasses import dataclass
 
 
 class OpenFile:
@@ -17,6 +18,25 @@ class OpenFile:
         return True
 
 
+class Maps:
+
+    def __init__(self, key):
+        self._client = googlemaps.Client(key=key)
+
+    def __enter__(self):
+        return self._client
+
+    def __exit__(self, error_type, value, traceback):
+        del self._client
+        return True
+
+
+@dataclass
+class Tag:
+
+    name: str
+    color: str = 'Yellow'
+
 
 class Task:
 
@@ -25,9 +45,13 @@ class Task:
         self.title = title
         self._priority = 1
         self.location = None
+        self.tag = Tag('Default tag')
 
     def __str__(self):
         return self.title
+
+    def __repr__(self):
+        return 'Task(title=\'{}\')'.format(self.title)
 
     @property
     def priority(self):
@@ -42,9 +66,7 @@ class Task:
 
     def add_location(self):
         place_lookup = input('Enter location name: \t')
-        gmaps = googlemaps.Client(
-            key='AIzaSyDZUTx1HWrOcNDng1V7-smaaHTBSobrw0I')
-        try:
+        with Maps(key='AIzaSyDZUTx1HWrOcNDng1V7-smaaHTBSobrw0I') as gmaps:
             place = gmaps.find_place(
                 place_lookup,
                 'textquery',
@@ -56,10 +78,7 @@ class Task:
                     'name': place['candidates'][0]['name'],
                     'google_id': place['candidates'][0]['place_id']
                 }
-            else:
-                raise RuntimeError('Cannot set location')
-        except:
-            return
+
 
 class Dashboard:
 
