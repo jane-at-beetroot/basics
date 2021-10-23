@@ -15,6 +15,8 @@ def task_list():
 
 @bp.route('/<int:task_id>')
 def task_detail(task_id):
-    for task in Task.objects:
-        if task.id == task_id:
-            return task.to_json()
+    task = binary_search(Task.objects, task_id)
+    if task:
+        return task.to_json()
+    else:
+        #return 404 Not found
