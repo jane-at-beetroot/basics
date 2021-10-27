@@ -25,8 +25,8 @@ class Task:
 
     @priority.setter    
     def priority(self, value):
-        if int(value) in range(1, 11):
-            self._priority = int(value)
+        if value in range(1, 11):
+            self._priority = value
         else:
             raise ValueError('Priority value is out of range')
 

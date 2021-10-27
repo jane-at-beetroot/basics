@@ -11,16 +11,17 @@ bp = Blueprint('task', __name__)
 def task_list():
     if request.method == 'POST':
         title = request.form['title']
-        priority = request.form['priority']
+        priority = int(request.form['priority'])
         new_task = Task(title=title, priority=priority)
     else:
         order = request.args.get(
             'order', default = '', type = str)
         if order:
-            bubble_sort(Task.objects, order)
+            tasks = [] #копія Task.objects
+            bubble_sort(tasks, order)
         else:
-            insertion_sort(Task.objects)
-    return render_template('task_list.html', tasks=Task.objects)
+            insertion_sort(tasks)
+    return render_template('task_list.html', tasks=tasks)
 
 
 @bp.route('/<int:task_id>')
