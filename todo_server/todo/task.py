@@ -1,6 +1,8 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, abort, render_template
 
 from .models import Task
+from ..utils.bubble_sort import bubble_sort
+from ..utils.insertion_sort import *
 
 
 bp = Blueprint('task', __name__)
@@ -8,15 +10,23 @@ bp = Blueprint('task', __name__)
 @bp.route('/', methods=['GET', 'POST'])
 def task_list():
     if request.method == 'POST':
-        data = request.get_json(force=True)
-        new_task = Task(**data)
-        return new_task.to_json()
-    return Task.list_to_json()
+        title = request.form['title']
+        priority = request.form['priority']
+        new_task = Task(title=title, priority=priority)
+    else:
+        order = request.args.get(
+            'order', default = '', type = str)
+        if order:
+            bubble_sort(Task.objects, order)
+        else:
+            insertion_sort(Task.objects)
+    return render_template('task_list.html', tasks=Task.objects)
+
 
 @bp.route('/<int:task_id>')
 def task_detail(task_id):
-    task = binary_search(Task.objects, task_id)
-    if task:
-        return task.to_json()
+    for task in Task.objects:
+        if task.id == task_id:
+            return task.to_json()
     else:
-        #return 404 Not found
+        abort(404)
