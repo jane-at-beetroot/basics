@@ -1,5 +1,7 @@
 import json
 
+from ..utils.binary_search import binary_search_by_id
+
 class Task:
 
     objects = []
@@ -11,6 +13,8 @@ class Task:
         self.priority = priority
         self.location = None
         self.tag = None
+#        self.parent = None 
+        self.children = []
         Task.objects.append(self)
 
     def __str__(self):
@@ -41,3 +45,25 @@ class Task:
     def list_to_json(cls):
         task_list = [t.__dict__ for t in cls.objects]
         return json.dumps(task_list)
+
+    def add_child(self, title, priority):
+        child_task = Task(title, priority)
+        self.children.append(child_task.id)
+
+    def get_subtasks(self):
+        if not self.children:
+            return []
+        children = []
+        for child_id in self.children:
+            child_task = binary_search_by_id(Task.objects, child_id)
+            if child_task is not None:
+                children.append(child_task)
+                children.extend(child_task.get_subtasks())
+        return children
+
+
+
+
+
+
+

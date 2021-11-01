@@ -14,3 +14,7 @@ def binary_search(array, element, low=None, high=None):
             return binary_search(array, element, mid + 1, high)
     else:
         return None
+
+
+def binary_search_by_id(array, element_id, low=None, high=None):
+      pass
