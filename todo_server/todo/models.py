@@ -1,6 +1,8 @@
 import json
 
-from ..utils.binary_search import binary_search_by_id
+from ..utils.bubble_sort import bubble_sort
+from ..utils.insertion_sort import *
+from ..utils.binary_search import binary_search
 
 class Task:
 
