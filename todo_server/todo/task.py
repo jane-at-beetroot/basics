@@ -9,7 +9,11 @@ from ..utils.insertion_sort import *
 
 bp = Blueprint('task', __name__)
 
-@bp.route('/', methods=['GET', 'POST'])
+@bp.route('/')
+def index():
+    return render_template('index.html')
+
+@bp.route('/task', methods=['GET', 'POST'])
 def task_list():
     if request.method == 'POST':
         title = request.form['title']
